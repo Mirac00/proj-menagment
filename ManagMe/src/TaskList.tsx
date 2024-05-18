@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Task } from './Task';
 import { TaskManager } from './TaskMenager';
@@ -10,7 +11,7 @@ const TaskList: React.FC = () => {
   const [description, setDescription] = useState<string>('');
   const [priority, setPriority] = useState<'low' | 'medium' | 'high'>('low');
   const [status, setStatus] = useState<'todo' | 'doing' | 'done'>('todo');
-  const [story, setStory] = useState<string>(''); // Dodane pole do wyboru historii
+  const [story, setStory] = useState<string>('');
 
   useEffect(() => {
     const storedTasks = localStorage.getItem('tasks');
@@ -28,8 +29,8 @@ const TaskList: React.FC = () => {
   };
 
   return (
-    <div className='TaskFormList'>
-      <h1>Lista Zadań</h1>
+    <div className='container'>
+      <h1 className='mt-4 mb-4'>Lista Zadań</h1>
       <form
         onSubmit={(e) => {
           e.preventDefault();
@@ -39,52 +40,60 @@ const TaskList: React.FC = () => {
             description,
             priority,
             story,
-            estimatedTime: 0, // Można dodać pole do formularza
+            estimatedTime: 0,
             status,
             creationDate: new Date(),
           };
           addTask(newTask);
         }}
       >
-        <input
-          type="text"
-          name="name"
-          placeholder="Nazwa"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-        />
-        <br />
-        <textarea
-          name="description"
-          placeholder="Opis"
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
-        />
-        <br />
-        <select value={priority} onChange={(e) => setPriority(e.target.value as 'low' | 'medium' | 'high')}>
-          <option value="low">Niski</option>
-          <option value="medium">Średni</option>
-          <option value="high">Wysoki</option>
-        </select>
-        <br />
-        <select value={status} onChange={(e) => setStatus(e.target.value as 'todo' | 'doing' | 'done')}>
-          <option value="todo">Do zrobienia</option>
-          <option value="doing">W trakcie</option>
-          <option value="done">Zrobione</option>
-        </select>
-        <br />
-        <select value={story} onChange={(e) => setStory(e.target.value)}>
-          {/* Tutaj możesz dodać opcje z historiami */}
-        </select>
-        <br />
-        <button type="submit">Dodaj Zadanie</button>
+        <div className="form-group">
+          <input
+            type="text"
+            className="form-control"
+            name="name"
+            placeholder="Nazwa"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+          />
+        </div>
+        <div className="form-group">
+          <textarea
+            className="form-control"
+            name="description"
+            placeholder="Opis"
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+          />
+        </div>
+        <div className="form-group">
+          <select className="form-control" value={priority} onChange={(e) => setPriority(e.target.value as 'low' | 'medium' | 'high')}>
+            <option value="low">Niski</option>
+            <option value="medium">Średni</option>
+            <option value="high">Wysoki</option>
+          </select>
+        </div>
+        <div className="form-group">
+          <select className="form-control" value={status} onChange={(e) => setStatus(e.target.value as 'todo' | 'doing' | 'done')}>
+            <option value="todo">Do zrobienia</option>
+            <option value="doing">W trakcie</option>
+            <option value="done">Zrobione</option>
+          </select>
+        </div>
+        <div className="form-group">
+          <select className="form-control" value={story} onChange={(e) => setStory(e.target.value)}>
+            {/* Tutaj mogą być historyjki */}
+          </select>
+        </div>
+        <button type="submit" className="btn btn-primary">Dodaj Zadanie</button>
       </form>
-      <ul>
+      <ul className="list-group mt-4">
         {tasks.map((task) => (
-          <li key={task.id}>
-            {task.name}
-            <br />
-            {task.description}
+          <li key={task.id} className="list-group-item">
+            <h5>{task.name}</h5>
+            <p>{task.description}</p>
+            <p>Status: {task.status}</p> {/* Dodane wyświetlanie statusu */}
+            <p>Priorytet: {task.priority}</p> {/* Dodane wyświetlanie priorytetu */}
           </li>
         ))}
       </ul>

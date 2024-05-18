@@ -1,4 +1,4 @@
-// ProjectMenager.ts
+
 import { Story } from './models';
 
 export class ProjectManager {

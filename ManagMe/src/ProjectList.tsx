@@ -1,4 +1,4 @@
-// ProjectList.tsx
+
 import React, { useState, useEffect } from 'react';
 import { Story } from './models';
 import { UserManager } from './UserManager';
@@ -36,8 +36,8 @@ const ProjectList: React.FC = () => {
   };
 
   return (
-    <div className='ProjectFormList'>
-      <h1>Lista Projektów</h1>
+    <div className='container'>
+      <h1 className='mt-4 mb-4'>Lista Projektów</h1>
       <form
         onSubmit={(e) => {
           e.preventDefault();
@@ -54,42 +54,49 @@ const ProjectList: React.FC = () => {
           addProject(newProject);
         }}
       >
-        <input
-          type="text"
-          name="name"
-          placeholder="Nazwa"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-        />
-        <br />
-        <input
-          type="text"
-          name="description"
-          placeholder="Opis"
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
-        />
-        <br />
-        <select value={priority} onChange={(e) => setPriority(e.target.value as 'low' | 'medium' | 'high')}>
-          <option value="low">Niski</option>
-          <option value="medium">Średni</option>
-          <option value="high">Wysoki</option>
-        </select>
-        <br />
-        <select value={status} onChange={(e) => setStatus(e.target.value as 'todo' | 'doing' | 'done')}>
-          <option value="todo">Do zrobienia</option>
-          <option value="doing">W trakcie</option>
-          <option value="done">Zrobione</option>
-        </select>
-        <br />
-        <button type="submit">Dodaj Projekt</button>
+        <div className="form-group">
+          <input
+            type="text"
+            className="form-control"
+            name="name"
+            placeholder="Nazwa"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+          />
+        </div>
+        <div className="form-group">
+          <input
+            type="text"
+            className="form-control"
+            name="description"
+            placeholder="Opis"
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+          />
+        </div>
+        <div className="form-group">
+          <select className="form-control" value={priority} onChange={(e) => setPriority(e.target.value as 'low' | 'medium' | 'high')}>
+            <option value="low">Niski</option>
+            <option value="medium">Średni</option>
+            <option value="high">Wysoki</option>
+          </select>
+        </div>
+        <div className="form-group">
+          <select className="form-control" value={status} onChange={(e) => setStatus(e.target.value as 'todo' | 'doing' | 'done')}>
+            <option value="todo">Do zrobienia</option>
+            <option value="doing">W trakcie</option>
+            <option value="done">Zrobione</option>
+          </select>
+        </div>
+        <button type="submit" className="btn btn-primary">Dodaj Projekt</button>
       </form>
-      <ul>
+      <ul className="list-group mt-4">
         {projects.map((project) => (
-          <li key={project.id}>
-            {project.name}
-            <br />
-            {project.description}
+          <li key={project.id} className="list-group-item">
+            <h5>{project.name}</h5>
+            <p>{project.description}</p>
+            <p>Status: {project.status}</p> {/* Dodane wyświetlanie statusu */}
+            <p>Priorytet: {project.priority}</p> {/* Dodane wyświetlanie priorytetu */}
           </li>
         ))}
       </ul>

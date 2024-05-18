@@ -1,0 +1,22 @@
+.theme-switcher {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+  }
+  
+  .theme-switcher label {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+  }
+  
+  .theme-switcher input[type="checkbox"] {
+    margin-right: 5px;
+  }
+  
+  /* Dodaj style dla ciemnego motywu */
+  .dark-theme {
+    background-color: #222;
+    color: #fff;
+  }
+  
