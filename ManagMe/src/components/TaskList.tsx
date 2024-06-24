@@ -1,57 +1,51 @@
-
 import React, { useState, useEffect } from 'react';
-import { Story } from './models';
-import { UserManager } from './UserManager';
-import { ProjectManager } from './ProjectManager';
-import './ProjectList.css';
+import { useParams, useNavigate } from 'react-router-dom';
+import { Task } from '@models/Task';
+import { TaskManager } from '../menagers/TaskMenager';
 
-const userManager = new UserManager();
-const projectManager = new ProjectManager();
+const taskManager = new TaskManager();
 
-const ProjectList: React.FC = () => {
-  const [projects, setProjects] = useState<Story[]>([]);
-  const [nextId, setNextId] = useState<number>(1);
+const TaskList: React.FC = () => {
+  const [tasks, setTasks] = useState<Task[]>([]);
   const [name, setName] = useState<string>('');
   const [description, setDescription] = useState<string>('');
   const [priority, setPriority] = useState<'low' | 'medium' | 'high'>('low');
   const [status, setStatus] = useState<'todo' | 'doing' | 'done'>('todo');
+  const { projectId, storyId } = useParams<{ projectId: string, storyId: string }>();
+  const navigate = useNavigate();
 
   useEffect(() => {
-    const storedProjects = localStorage.getItem('projects');
-    if (storedProjects) {
-      setProjects(JSON.parse(storedProjects));
+    if (storyId) {
+      const storedTasks = taskManager.getTasksByStory(storyId);
+      setTasks(storedTasks);
     }
-  }, []);
+  }, [storyId]);
 
-  const addProject = (newProject: Story) => {
-    newProject.id = nextId.toString();
-    setNextId(nextId + 1);
-    setProjects([...projects, newProject]);
-    localStorage.setItem('projects', JSON.stringify([...projects, newProject]));
-
-    projectManager.addStory(newProject);
-
+  const addTask = (newTask: Task) => {
+    taskManager.addTask(newTask);
+    setTasks([...tasks, newTask]);
     setName('');
     setDescription('');
   };
 
   return (
-    <div className='container'>
-      <h1 className='mt-4 mb-4'>Lista Projektów</h1>
+    <div className="container">
+      <h1 className="mt-4 mb-4">Lista Zadań</h1>
+      <button className="btn btn-secondary mb-4" onClick={() => navigate(`/projects/${projectId}/stories`)}>Powrót do listy historyjek</button>
       <form
         onSubmit={(e) => {
           e.preventDefault();
-          const newProject = {
-            id: nextId.toString(),
+          const newTask: Task = {
+            id: (tasks.length + 1).toString(),
             name,
             description,
             priority,
-            project: projectManager.getCurrentProject(),
-            creationDate: new Date(),
+            storyId: storyId || '',  // default to empty string if undefined
+            estimatedTime: 0,
             status,
-            ownerId: userManager.getCurrentUser().id,
+            creationDate: new Date(),
           };
-          addProject(newProject);
+          addTask(newTask);
         }}
       >
         <div className="form-group">
@@ -65,8 +59,7 @@ const ProjectList: React.FC = () => {
           />
         </div>
         <div className="form-group">
-          <input
-            type="text"
+          <textarea
             className="form-control"
             name="description"
             placeholder="Opis"
@@ -88,15 +81,15 @@ const ProjectList: React.FC = () => {
             <option value="done">Zrobione</option>
           </select>
         </div>
-        <button type="submit" className="btn btn-primary">Dodaj Projekt</button>
+        <button type="submit" className="btn btn-primary">Dodaj Zadanie</button>
       </form>
       <ul className="list-group mt-4">
-        {projects.map((project) => (
-          <li key={project.id} className="list-group-item">
-            <h5>{project.name}</h5>
-            <p>{project.description}</p>
-            <p>Status: {project.status}</p> {/* Dodane wyświetlanie statusu */}
-            <p>Priorytet: {project.priority}</p> {/* Dodane wyświetlanie priorytetu */}
+        {tasks.map((task) => (
+          <li key={task.id} className="list-group-item">
+            <h5>{task.name}</h5>
+            <p>{task.description}</p>
+            <p>Status: {task.status}</p>
+            <p>Priorytet: {task.priority}</p>
           </li>
         ))}
       </ul>
@@ -104,4 +97,4 @@ const ProjectList: React.FC = () => {
   );
 };
 
-export default ProjectList;
+export default TaskList;

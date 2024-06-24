@@ -1,17 +1,13 @@
+import { Story } from '../models/Story';
 
-import { Story } from './models';
-
-export class ProjectManager {
-  private currentProject: string = '';
+export class StoryManager {
   private stories: Story[] = [];
 
-  setCurrentProject(project: string) {
-    this.currentProject = project;
-    localStorage.setItem('currentProject', project);
-  }
-
-  getCurrentProject() {
-    return this.currentProject;
+  constructor() {
+    const storedStories = localStorage.getItem('stories');
+    if (storedStories) {
+      this.stories = JSON.parse(storedStories);
+    }
   }
 
   addStory(story: Story) {
@@ -31,7 +27,11 @@ export class ProjectManager {
     localStorage.setItem('stories', JSON.stringify(this.stories));
   }
 
-  getStoriesByStatus(status: 'todo' | 'doing' | 'done') {
+  getStoriesByProject(projectId: string): Story[] {
+    return this.stories.filter(story => story.projectId === projectId);
+  }
+
+  getStoriesByStatus(status: 'todo' | 'doing' | 'done'): Story[] {
     return this.stories.filter(story => story.status === status);
   }
 }

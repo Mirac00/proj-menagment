@@ -1,6 +1,5 @@
-// Project.ts
 type Project = {
-  id?: string;
+  id: string;
   name: string;
   description: string;
 };

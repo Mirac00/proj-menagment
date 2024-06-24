@@ -1,5 +1,4 @@
-
-import { Task } from './Task';
+import { Task } from '../models/Task';
 
 export class TaskManager {
   private tasks: Task[] = [];
@@ -28,11 +27,11 @@ export class TaskManager {
     localStorage.setItem('tasks', JSON.stringify(this.tasks));
   }
 
-  getTasksByStatus(status: 'todo' | 'doing' | 'done') {
-    return this.tasks.filter(task => task.status === status);
+  getTasksByStory(storyId: string): Task[] {
+    return this.tasks.filter(task => task.storyId === storyId);
   }
 
-  getTasksByStory(storyId: string) {
-    return this.tasks.filter(task => task.story === storyId);
+  getTasksByStatus(status: 'todo' | 'doing' | 'done'): Task[] {
+    return this.tasks.filter(task => task.status === status);
   }
 }

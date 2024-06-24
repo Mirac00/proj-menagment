@@ -7,7 +7,7 @@
     "skipLibCheck": true,
 
     /* Bundler mode */
-    "moduleResolution": "bundler",
+    "moduleResolution": "node",
     "allowImportingTsExtensions": true,
     "resolveJsonModule": true,
     "isolatedModules": true,
@@ -18,7 +18,23 @@
     "strict": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
-    "noFallthroughCasesInSwitch": true
+    "noFallthroughCasesInSwitch": true,
+
+    /* Paths */
+    "baseUrl": ".",
+    "paths": {
+      "@components/*": ["src/components/*"],
+      "@managers/*": ["src/managers/*"],
+      "@models/*": ["src/models/*"],
+      "@styles/*": ["src/*"]
+    },
+
+    /* Synthetic default imports */
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+
+    /* Add missing types */
+    "types": ["webidl-conversions", "whatwg-url"]
   },
   "include": ["src"],
   "references": [{ "path": "./tsconfig.node.json" }]
