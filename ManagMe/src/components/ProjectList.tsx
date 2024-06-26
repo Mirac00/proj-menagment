@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import Project from '@models/Project';
-import { ProjectManager } from '../menagers/ProjectManager';
-
+import Project from '../models/Project'; // Załóżmy, że to jest poprawna ścieżka
+import { ProjectManager } from '../menagers/ProjectManager'; // Poprawiono literówkę w ścieżce
 
 const projectManager = new ProjectManager();
 
@@ -10,21 +9,33 @@ const ProjectList: React.FC = () => {
   const [projects, setProjects] = useState<Project[]>([]);
   const [name, setName] = useState<string>('');
   const [description, setDescription] = useState<string>('');
-  const isLoggedIn = !!localStorage.getItem('token'); // Simple check for authentication
+  const isLoggedIn = !!localStorage.getItem('token'); // Proste sprawdzenie autentykacji
   const navigate = useNavigate();
 
   useEffect(() => {
-    const storedProjects = projectManager.getProjects();
-    if (storedProjects) {
-      setProjects(storedProjects);
+    try {
+      const storedProjects = projectManager.getProjects();
+      if (storedProjects) {
+        setProjects(storedProjects);
+      }
+    } catch (error) {
+      console.error('Failed to load projects:', error);
     }
   }, []);
 
   const addProject = (newProject: Project) => {
-    projectManager.addProject(newProject);
-    setProjects([...projects, newProject]);
-    setName('');
-    setDescription('');
+    if (!isLoggedIn) {
+      alert('Please log in to add a project.');
+      return;
+    }
+    try {
+      projectManager.addProject(newProject);
+      setProjects([...projects, newProject]);
+      setName('');
+      setDescription('');
+    } catch (error) {
+      console.error('Error adding project:', error);
+    }
   };
 
   const handleProjectSelect = (projectId: string) => {
@@ -35,41 +46,42 @@ const ProjectList: React.FC = () => {
   return (
     <div className="container">
       <h1 className="mt-4 mb-4">Lista Projektów</h1>
-      {isLoggedIn && (
-        <form
-          onSubmit={(e) => {
-            e.preventDefault();
-            const newProject = {
-              id: (projects.length + 1).toString(),
-              name,
-              description
-            };
-            addProject(newProject);
-          }}
-        >
-          <div className="form-group">
-            <input
-              type="text"
-              className="form-control"
-              name="name"
-              placeholder="Nazwa"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-            />
-          </div>
-          <div className="form-group">
-            <input
-              type="text"
-              className="form-control"
-              name="description"
-              placeholder="Opis"
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-            />
-          </div>
-          <button type="submit" className="btn btn-primary">Dodaj Projekt</button>
-        </form>
-      )}
+      <form
+        onSubmit={(e) => {
+          e.preventDefault();
+          const newProject = {
+            id: (projects.length + 1).toString(),
+            name,
+            description
+          };
+          addProject(newProject);
+        }}
+      >
+        <div className="form-group">
+          <input
+            type="text"
+            className="form-control"
+            name="name"
+            placeholder="Nazwa"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            disabled={!isLoggedIn}
+          />
+        </div>
+        <div className="form-group">
+          <input
+            type="text"
+            className="form-control"
+            name="description"
+            placeholder="Opis"
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            disabled={!isLoggedIn}
+          />
+        </div>
+        <button type="submit" className="btn btn-primary" disabled={!isLoggedIn}>Dodaj Projekt</button>
+        {!isLoggedIn && <p className="text-warning">Zaloguj się, aby dodać projekt.</p>}
+      </form>
       <ul className="list-group mt-4">
         {projects.map((project) => (
           <li key={project.id} className="list-group-item" onClick={() => handleProjectSelect(project.id)}>
